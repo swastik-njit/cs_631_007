@@ -1,0 +1,7 @@
+mysql-connector-python
+python-multipart
+python-dateutil
+fastapi
+uvicorn
+loguru
+python-dotenv
