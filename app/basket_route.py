@@ -6,19 +6,21 @@ from typing import Optional
 from loguru import logger
 
 from .database import get_db
-from .product_service import create_product
-from .product_service import update_product
-from .product_service import get_all_products
-from .product_service import get_product
+from .basket_service import add_to_basket
+from .basket_service import update_basket
+from .basket_service import remove_basket
+from .basket_service import get_basket_details
+from .customer_service import get_customer_by_email
 
 
-router = APIRouter(prefix="/product", tags=["Product"])    
+router = APIRouter(prefix="/basket", tags=["Basket"])    
 
 @router.post("/add/")
-async def create_product_route(ptype: str = Form(...), name: str = Form(...), price: float = Form(...), desc: str = Form(...), quantity: int = Form(...), offer_price: float = Form(...), db: mysql.connector.MySQLConnection = Depends(get_db)):
-    # if isinstance(offer_price, float):
+async def create_product_route(customer_email: str = Form(...), product_id: int = Form(...), quantity: int = Form(...), db: mysql.connector.MySQLConnection = Depends(get_db)):
+    customer = get_customer_by_email(db, customer_email)
+    int(customer['CID'])
 
-    product_id = create_product(db, ptype, name, price, desc, quantity, offer_price)
+    basket_id = add_to_basket(db, customer_email, product_id, quantity)
     return JSONResponse(content={"product_id": product_id, "product_name": name, "price": price}, status_code=201)
 
 
