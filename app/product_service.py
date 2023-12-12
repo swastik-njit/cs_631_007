@@ -11,12 +11,18 @@ def create_query(params):
 
 
 # CRUD operations for products
-def create_product(db, ptype: str, name: str, price: float, desc: str, quantity: int):
+def create_product(db, ptype: str, name: str, price: float, desc: str, quantity: int, offer_price: float):
     cursor = db.cursor(dictionary=True)
     try:
         cursor.execute("INSERT INTO PRODUCT (PTYPE, PNAME, PPRICE, DESCRIPTION, PQUANTITY) VALUES (%s, %s, %s, %s, %s)", (ptype, name, price, desc, quantity))
         db.commit()
         product_id = cursor.lastrowid
+        
+        if isinstance(offer_price, float): 
+            if offer_price > 0: 
+                cursor.execute("INSERT INTO OFFER_PRODUCT (PID, OFFERPRICE) VALUES (%s, %s)", (product_id, offer_price))
+                db.commit()
+
         return product_id
     except Exception as e:
         db.rollback()

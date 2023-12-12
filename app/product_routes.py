@@ -17,7 +17,7 @@ router = APIRouter(prefix="/product", tags=["Product"])
 @router.post("/add/")
 async def create_product_route(ptype: str = Form(...), name: str = Form(...), price: float = Form(...), desc: str = Form(...), quantity: int = Form(...), offer_price: float = Form(...), db: mysql.connector.MySQLConnection = Depends(get_db)):
     # if isinstance(offer_price, float):
-
+    
     product_id = create_product(db, ptype, name, price, desc, quantity, offer_price)
     return JSONResponse(content={"product_id": product_id, "product_name": name, "price": price}, status_code=201)
 
