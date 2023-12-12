@@ -19,7 +19,7 @@ router = APIRouter(prefix="/shipping", tags=["Shipping Address"])
 @router.post("/add-address/")
 async def add_new_ship_addrs(customer_email: str = Form(...), saname: str = Form(...), recipient_name: str = Form(...), street: str = Form(...), snumber: str = Form(...), city: str = Form(...), zipcode: int = Form(...), state: str = Form(...), country: str = Form(...), db: mysql.connector.MySQLConnection = Depends(get_db)):
     customer = get_customer_by_email(db, customer_email)
-    rows_affected = add_new_ship_address(db, customer['CID'], saname, recipient_name, street, snumber, city, zipcode, state, country)
+    rows_affected = add_new_ship_address(db, int(customer['CID']), saname, recipient_name, street, snumber, city, zipcode, state, country)
     return JSONResponse(content={"rows_affected": rows_affected, "ship_address_name": saname, "recipient_name": recipient_name}, status_code=201)
 
 
@@ -31,14 +31,14 @@ async def update_ship_addrs(customer_email: str = Form(...), saname: str = Form(
     addrs_details = {key: value for key, value in addrs_details.items() if (isinstance(value, int) or isinstance(value, str))}
     addrs_details = {key: value for key, value in addrs_details.items() if (value != '' or value != 0)}
 
-    rows_affected = update_ship_address(db, saname, customer['CID'], addrs_details)
-    return JSONResponse(content={"rows_affected": rows_affected, "ship_address_name": saname, "recipient_name": recipient_name}, status_code=201)
+    rows_affected = update_ship_address(db, saname, int(customer['CID']), addrs_details)
+    return JSONResponse(content={"rows_affected": rows_affected, "ship_address_name": saname}, status_code=201)
 
 
 @router.post("/delete-address/")
 async def delete_ship_addrs(customer_email: str = Form(...), saname: str = Form(...), db: mysql.connector.MySQLConnection = Depends(get_db)):
     customer = get_customer_by_email(db, customer_email)
-    rows_affected = delete_ship_address(db, customer['CID'], saname)
+    rows_affected = delete_ship_address(db, int(customer['CID']), saname)
 
     if rows_affected == 0:
         raise HTTPException(status_code=401, detail="Invalid email provided")
@@ -49,13 +49,13 @@ async def delete_ship_addrs(customer_email: str = Form(...), saname: str = Form(
 @router.get("/get-address/")
 async def retrieve_customer_ship_address(customer_email: str, db: mysql.connector.MySQLConnection = Depends(get_db)):
     customer = get_customer_by_email(db, customer_email)
-    addresses = get_customer_ship_address(db, customer['CID'])
+    addresses = get_customer_ship_address(db, int(customer['CID']))
     return JSONResponse(content={"addresses": addresses}, status_code=201)
 
 
 @router.get("/get-details/")
 async def retrieve_ship_address_details(customer_email: str, saname: str, db: mysql.connector.MySQLConnection = Depends(get_db)):
     customer = get_customer_by_email(db, customer_email)
-    address = get_ship_address_details(db, customer['CID'], saname)
+    address = get_ship_address_details(db, int(customer['CID']), saname)
     return JSONResponse(content={"address_details": address}, status_code=201)
 

@@ -76,7 +76,7 @@ DROP TABLE IF EXISTS NEWARK_IT.LAPTOP;
 CREATE TABLE IF NOT EXISTS NEWARK_IT.LAPTOP
 (
  PID                bigint unsigned NOT NULL ,
- BTYPE              time NOT NULL ,
+ BTYPE              varchar(255) NOT NULL ,
  WEIGHT             integer NOT NULL ,
 PRIMARY KEY (PID),
 FOREIGN KEY (PID) REFERENCES NEWARK_IT.DESKTOP (PID)
@@ -118,7 +118,7 @@ DROP TABLE IF EXISTS NEWARK_IT.TRANSACTION;
 CREATE TABLE IF NOT EXISTS NEWARK_IT.TRANSACTION
 (
  BID                bigint unsigned NOT NULL ,
- CCNUMBER           integer NOT NULL ,
+ CCNUMBER           bigint NOT NULL ,
  CID                bigint unsigned NOT NULL ,
  SANAME             varchar(255) NOT NULL ,
  TDATE              date NOT NULL ,
